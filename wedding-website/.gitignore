@@ -1,0 +1,19 @@
+# dependencias
+/node_modules
+
+# builds de Next.js
+/.next
+/out
+
+# variables de entorno (credenciales) — NUNCA subir al repo
+.env
+.env.local
+.env*.local
+
+# credenciales de Google
+*.credentials.json
+service-account*.json
+
+# varios
+.DS_Store
+*.log
