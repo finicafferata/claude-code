@@ -39,7 +39,7 @@ export const siteConfig = {
   // --- Hero ------------------------------------------------------------------
   hero: {
     imagen: "/images/hero.jpg", // <- colocá tu foto acá (recomendado 2000px de ancho)
-    alt: "Cata y Santos",
+    alt: "Cata y Santos el día del compromiso, mostrando el anillo",
     frase: "¡Nos casamos!",
   },
 
@@ -52,8 +52,8 @@ export const siteConfig = {
       "Hoy queremos dar el siguiente paso rodeados de la gente que amamos. Gracias por ser parte de nuestra historia y por acompañarnos en el día más importante.",
     ],
     fotos: [
-      { src: "/images/historia-1.jpg", alt: "Cata y Santos" },
-      { src: "/images/historia-2.jpg", alt: "Cata y Santos" },
+      { src: "/images/historia-1.jpg", alt: "Cata y Santos de paseo en la montaña" },
+      { src: "/images/historia-2.jpg", alt: "Cata y Santos de viaje en París" },
     ] as Foto[],
   },
 
