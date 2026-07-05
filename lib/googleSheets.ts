@@ -128,7 +128,11 @@ export async function appendRsvp(
     // empieza con + = - @ (ej. un teléfono "+54...") se interprete como
     // fórmula y quede como #ERROR!, y previene inyección de fórmulas.
     valueInputOption: "RAW",
-    insertDataOption: "INSERT_ROWS",
+    // OVERWRITE (no INSERT_ROWS): escribe en las filas vacías que ya existen
+    // debajo, sin insertar filas nuevas en la grilla. Insertar filas correría
+    // hacia abajo las referencias de fórmulas de otras pestañas (ej. la de
+    // "Confirmados"), rompiéndolas con cada confirmación.
+    insertDataOption: "OVERWRITE",
     requestBody: {
       values: toRows(data, timestamp),
     },
