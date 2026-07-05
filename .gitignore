@@ -17,3 +17,6 @@ service-account*.json
 # varios
 .DS_Store
 *.log
+
+# TypeScript incremental build cache
+*.tsbuildinfo
