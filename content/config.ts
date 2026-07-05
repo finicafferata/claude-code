@@ -30,9 +30,9 @@ export const siteConfig = {
   // --- Fecha del casamiento --------------------------------------------------
   fecha: {
     // ISO con zona horaria de Argentina (-03:00). El countdown usa este valor.
-    iso: "2026-03-06T17:00:00-03:00",
-    dia: "Viernes",
-    textoLargo: "6 de marzo de 2026",
+    iso: "2027-03-06T17:00:00-03:00",
+    dia: "Sábado",
+    textoLargo: "6 de marzo de 2027",
     ciudad: "Buenos Aires, Argentina",
   },
 
@@ -115,7 +115,7 @@ export const siteConfig = {
     {
       pregunta: "¿Hasta cuándo confirmo asistencia?",
       respuesta:
-        "Te pedimos confirmar antes del 6 de febrero de 2026 para organizar todo con tiempo.",
+        "Te pedimos confirmar antes del 6 de febrero de 2027 para organizar todo con tiempo.",
     },
     {
       pregunta: "¿Cómo llego a la fiesta?",
@@ -130,7 +130,7 @@ export const siteConfig = {
 
   // --- RSVP ------------------------------------------------------------------
   rsvp: {
-    fechaLimite: "6 de febrero de 2026", // TODO: ajustar fecha límite si hace falta
+    fechaLimite: "6 de febrero de 2027", // TODO: ajustar fecha límite si hace falta
   },
 
   // --- Footer ----------------------------------------------------------------
