@@ -80,6 +80,7 @@ export default function RsvpForm() {
   const [errorGeneral, setErrorGeneral] = useState<string>("");
 
   const asisteSi = form.asiste === "si";
+  const vaConAcompanantes = Number(form.cantidadAcompanantes) > 0;
 
   // Actualiza un campo y limpia su error mientras el usuario corrige.
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -305,79 +306,56 @@ export default function RsvpForm() {
 
             {/* Campos condicionales (solo si asiste === "si") */}
             {asisteSi && (
-              <div className="space-y-6 rounded-2xl bg-salvia-claro/30 p-5 ring-1 ring-salvia-claro">
-                {/* Cantidad de acompañantes */}
-                <Campo
-                  id="cantidadAcompanantes"
-                  label="Cantidad de acompañantes"
-                  errores={errores.cantidadAcompanantes}
-                >
-                  <input
+              <>
+                {/* --- Bloque ACOMPAÑANTES (el +1) --- */}
+                <div className="space-y-6 rounded-2xl bg-salvia-claro/30 p-5 ring-1 ring-salvia-claro">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-salvia-oscuro">
+                    Acompañantes
+                  </p>
+
+                  {/* Cantidad de acompañantes */}
+                  <Campo
                     id="cantidadAcompanantes"
-                    name="cantidadAcompanantes"
-                    type="number"
-                    min={0}
-                    max={20}
-                    value={form.cantidadAcompanantes}
-                    onChange={(e) => set("cantidadAcompanantes", e.target.value)}
-                    className={inputCls(!!errores.cantidadAcompanantes)}
-                  />
-                </Campo>
+                    label="Cantidad de acompañantes"
+                    errores={errores.cantidadAcompanantes}
+                  >
+                    <input
+                      id="cantidadAcompanantes"
+                      name="cantidadAcompanantes"
+                      type="number"
+                      min={0}
+                      max={20}
+                      value={form.cantidadAcompanantes}
+                      onChange={(e) => set("cantidadAcompanantes", e.target.value)}
+                      className={inputCls(!!errores.cantidadAcompanantes)}
+                    />
+                  </Campo>
 
-                {/* Nombres de acompañantes */}
-                <Campo
-                  id="nombresAcompanantes"
-                  label="Nombres de los acompañantes"
-                  opcional
-                  errores={errores.nombresAcompanantes}
-                >
-                  <input
-                    id="nombresAcompanantes"
-                    name="nombresAcompanantes"
-                    type="text"
-                    value={form.nombresAcompanantes}
-                    onChange={(e) => set("nombresAcompanantes", e.target.value)}
-                    className={inputCls(!!errores.nombresAcompanantes)}
-                  />
-                </Campo>
+                  {/* Nombres de acompañantes (solo si va con alguien) */}
+                  {vaConAcompanantes && (
+                    <Campo
+                      id="nombresAcompanantes"
+                      label="Nombres de tus acompañantes"
+                      errores={errores.nombresAcompanantes}
+                    >
+                      <input
+                        id="nombresAcompanantes"
+                        name="nombresAcompanantes"
+                        type="text"
+                        placeholder="Separá los nombres con comas"
+                        value={form.nombresAcompanantes}
+                        onChange={(e) => set("nombresAcompanantes", e.target.value)}
+                        className={inputCls(!!errores.nombresAcompanantes)}
+                      />
+                    </Campo>
+                  )}
+                </div>
 
-                {/* ¿Necesita traslado? */}
-                <fieldset>
-                  <legend className="mb-2 block text-sm font-semibold text-tinta">
-                    ¿Necesitás traslado? <span className="font-normal text-tinta-suave">(combi ida y vuelta)</span>
-                  </legend>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { v: "si" as const, label: "Sí, me sumo a la combi" },
-                      { v: "no" as const, label: "No, voy por mi cuenta" },
-                    ].map((op) => (
-                      <label
-                        key={op.v}
-                        className={[
-                          "cursor-pointer rounded-xl border px-4 py-3 text-center text-sm font-medium transition-colors",
-                          form.necesitaTraslado === op.v
-                            ? "border-salvia bg-salvia text-white"
-                            : "border-linea bg-crema text-tinta-suave hover:border-salvia",
-                        ].join(" ")}
-                      >
-                        <input
-                          type="radio"
-                          name="necesitaTraslado"
-                          value={op.v}
-                          checked={form.necesitaTraslado === op.v}
-                          onChange={() => set("necesitaTraslado", op.v)}
-                          className="sr-only"
-                        />
-                        {op.label}
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-
+                {/* --- Bloque de QUIEN CONFIRMA (tus datos) --- */}
                 {/* Restricción alimentaria */}
                 <Campo
                   id="restriccionAlimentaria"
-                  label="Restricción alimentaria"
+                  label="Tu restricción alimentaria"
                   errores={errores.restriccionAlimentaria}
                 >
                   <select
@@ -414,6 +392,46 @@ export default function RsvpForm() {
                   </Campo>
                 )}
 
+                {/* ¿Necesita(n) traslado? — plural si va con acompañantes */}
+                <fieldset>
+                  <legend className="mb-2 block text-sm font-semibold text-tinta">
+                    {vaConAcompanantes ? "¿Necesitan traslado?" : "¿Necesitás traslado?"}{" "}
+                    <span className="font-normal text-tinta-suave">(combi ida y vuelta)</span>
+                  </legend>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      {
+                        v: "si" as const,
+                        label: vaConAcompanantes ? "Sí, nos sumamos a la combi" : "Sí, me sumo a la combi",
+                      },
+                      {
+                        v: "no" as const,
+                        label: vaConAcompanantes ? "No, vamos por nuestra cuenta" : "No, voy por mi cuenta",
+                      },
+                    ].map((op) => (
+                      <label
+                        key={op.v}
+                        className={[
+                          "cursor-pointer rounded-xl border px-4 py-3 text-center text-sm font-medium transition-colors",
+                          form.necesitaTraslado === op.v
+                            ? "border-salvia bg-salvia text-white"
+                            : "border-linea bg-crema text-tinta-suave hover:border-salvia",
+                        ].join(" ")}
+                      >
+                        <input
+                          type="radio"
+                          name="necesitaTraslado"
+                          value={op.v}
+                          checked={form.necesitaTraslado === op.v}
+                          onChange={() => set("necesitaTraslado", op.v)}
+                          className="sr-only"
+                        />
+                        {op.label}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
                 {/* Canción sugerida */}
                 <Campo
                   id="cancionSugerida"
@@ -430,7 +448,7 @@ export default function RsvpForm() {
                     className={inputCls(!!errores.cancionSugerida)}
                   />
                 </Campo>
-              </div>
+              </>
             )}
 
             {/* Mensaje */}
