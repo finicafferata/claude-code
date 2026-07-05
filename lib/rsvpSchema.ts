@@ -14,6 +14,15 @@ export const DIETARY_OPTIONS = [
   "Otra",
 ] as const;
 
+// Un acompañante: nombre + su propia restricción alimentaria.
+export const companionSchema = z.object({
+  nombre: z.string().trim().max(120).default(""),
+  restriccionAlimentaria: z.enum(DIETARY_OPTIONS).default("Ninguna"),
+  detalleRestriccion: z.string().trim().max(300).default(""),
+});
+
+export type Companion = z.infer<typeof companionSchema>;
+
 export const rsvpSchema = z
   .object({
     // Datos de contacto
@@ -38,7 +47,8 @@ export const rsvpSchema = z
       .max(20)
       .optional()
       .default(0),
-    nombresAcompanantes: z.string().trim().max(500).optional().default(""),
+    // Una entrada por acompañante (nombre + restricción de cada uno).
+    acompanantes: z.array(companionSchema).max(20).optional().default([]),
 
     // ¿Necesita traslado (combi)? Solo relevante si asiste === "si".
     necesitaTraslado: z.enum(["si", "no"]).optional().default("no"),

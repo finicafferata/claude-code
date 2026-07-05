@@ -11,14 +11,15 @@ import type { RsvpData } from "./rsvpSchema";
 const SHEET_TAB = process.env.GOOGLE_SHEET_TAB || "RSVP";
 
 // Orden de las columnas en el Sheet. Debe coincidir con la fila de encabezados.
+// Ahora se escribe UNA FILA POR PERSONA (el titular + cada acompañante).
 export const SHEET_HEADERS = [
   "timestamp",
+  "rol", // "Titular" o "Acompañante"
+  "grupo", // nombre del titular: agrupa a toda la familia/grupo
   "nombre_completo",
   "email",
   "telefono",
   "asiste",
-  "cantidad_acompanantes",
-  "nombres_acompanantes",
   "necesita_traslado",
   "restriccion_alimentaria",
   "detalle_restriccion",
@@ -58,27 +59,61 @@ function getSheetId() {
   return id;
 }
 
-/** Convierte un RSVP validado en la fila que se escribe en el Sheet. */
-function toRow(data: RsvpData, timestamp: string): string[] {
-  return [
-    timestamp,
-    data.nombreCompleto,
-    data.email,
-    data.telefono ?? "",
-    data.asiste === "si" ? "Sí" : "No",
-    data.asiste === "si" ? String(data.cantidadAcompanantes ?? 0) : "",
-    data.asiste === "si" ? data.nombresAcompanantes ?? "" : "",
-    data.asiste === "si" ? (data.necesitaTraslado === "si" ? "Sí" : "No") : "",
-    data.restriccionAlimentaria ?? "Ninguna",
-    data.detalleRestriccion ?? "",
-    data.cancionSugerida ?? "",
-    data.mensaje ?? "",
+/**
+ * Convierte un RSVP validado en una o varias filas: una para el titular
+ * (quien completa el formulario) y una por cada acompañante con nombre.
+ */
+function toRows(data: RsvpData, timestamp: string): string[][] {
+  const asiste = data.asiste === "si";
+  const traslado = asiste ? (data.necesitaTraslado === "si" ? "Sí" : "No") : "";
+  const grupo = data.nombreCompleto; // agrupa a todo el grupo por el titular
+
+  // Fila del titular
+  const rows: string[][] = [
+    [
+      timestamp,
+      "Titular",
+      grupo,
+      data.nombreCompleto,
+      data.email,
+      data.telefono ?? "",
+      asiste ? "Sí" : "No",
+      traslado,
+      data.restriccionAlimentaria ?? "Ninguna",
+      data.detalleRestriccion ?? "",
+      data.cancionSugerida ?? "",
+      data.mensaje ?? "",
+    ],
   ];
+
+  // Una fila por acompañante (solo si el titular asiste)
+  if (asiste) {
+    for (const a of data.acompanantes ?? []) {
+      const nombre = (a.nombre ?? "").trim();
+      if (!nombre) continue; // saltear acompañantes sin nombre
+      rows.push([
+        timestamp,
+        "Acompañante",
+        grupo,
+        nombre,
+        "", // email (no se pide por acompañante)
+        "", // teléfono
+        "Sí", // vienen con el titular
+        traslado, // mismo traslado que el grupo
+        a.restriccionAlimentaria ?? "Ninguna",
+        a.detalleRestriccion ?? "",
+        "", // canción
+        "", // mensaje
+      ]);
+    }
+  }
+
+  return rows;
 }
 
 /**
- * Agrega una fila con el RSVP al final de la pestaña configurada.
- * `timestamp` lo genera el servidor (no el invitado).
+ * Agrega las filas del RSVP al final de la pestaña configurada: una para el
+ * titular y una por cada acompañante. `timestamp` lo genera el servidor.
  */
 export async function appendRsvp(
   data: RsvpData,
@@ -95,7 +130,7 @@ export async function appendRsvp(
     valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
     requestBody: {
-      values: [toRow(data, timestamp)],
+      values: toRows(data, timestamp),
     },
   });
 }

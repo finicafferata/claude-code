@@ -14,13 +14,26 @@ type Asiste = "" | "si" | "no";
 const RESTRICCIONES = ["Ninguna", "Vegetariano", "Vegano", "Celíaco", "Otra"] as const;
 type Restriccion = (typeof RESTRICCIONES)[number];
 
+// Cada acompañante tiene su propio nombre y restricción alimentaria.
+type Acompanante = {
+  nombre: string;
+  restriccionAlimentaria: Restriccion;
+  detalleRestriccion: string;
+};
+
+const acompananteVacio = (): Acompanante => ({
+  nombre: "",
+  restriccionAlimentaria: "Ninguna",
+  detalleRestriccion: "",
+});
+
 type FormState = {
   nombreCompleto: string;
   email: string;
   telefono: string;
   asiste: Asiste;
   cantidadAcompanantes: string; // string en el input; se castea a número al enviar
-  nombresAcompanantes: string;
+  acompanantes: Acompanante[];
   necesitaTraslado: "si" | "no";
   restriccionAlimentaria: Restriccion;
   detalleRestriccion: string;
@@ -38,7 +51,7 @@ const INICIAL: FormState = {
   telefono: "",
   asiste: "",
   cantidadAcompanantes: "0",
-  nombresAcompanantes: "",
+  acompanantes: [],
   necesitaTraslado: "no",
   restriccionAlimentaria: "Ninguna",
   detalleRestriccion: "",
@@ -88,6 +101,29 @@ export default function RsvpForm() {
     setErrores((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
   }
 
+  // Cambiar la cantidad de acompañantes ajusta el array (agrega/quita filas).
+  function setCantidad(value: string) {
+    const n = Math.max(0, Math.min(20, Math.floor(Number(value) || 0)));
+    setForm((prev) => {
+      const arr = prev.acompanantes.slice(0, n);
+      while (arr.length < n) arr.push(acompananteVacio());
+      return { ...prev, cantidadAcompanantes: value, acompanantes: arr };
+    });
+    setErrores((prev) =>
+      prev.cantidadAcompanantes ? { ...prev, cantidadAcompanantes: undefined } : prev
+    );
+  }
+
+  // Actualiza un campo de un acompañante puntual.
+  function setAcomp(i: number, key: keyof Acompanante, value: string) {
+    setForm((prev) => ({
+      ...prev,
+      acompanantes: prev.acompanantes.map((a, idx) =>
+        idx === i ? ({ ...a, [key]: value } as Acompanante) : a
+      ),
+    }));
+  }
+
   async function onSubmit(ev: React.FormEvent) {
     ev.preventDefault();
     setErrorGeneral("");
@@ -116,8 +152,12 @@ export default function RsvpForm() {
     };
 
     if (asisteSi) {
-      payload.cantidadAcompanantes = Number(form.cantidadAcompanantes);
-      payload.nombresAcompanantes = form.nombresAcompanantes.trim();
+      payload.cantidadAcompanantes = form.acompanantes.length;
+      payload.acompanantes = form.acompanantes.map((a) => ({
+        nombre: a.nombre.trim(),
+        restriccionAlimentaria: a.restriccionAlimentaria,
+        detalleRestriccion: a.detalleRestriccion.trim(),
+      }));
       payload.necesitaTraslado = form.necesitaTraslado;
       payload.restriccionAlimentaria = form.restriccionAlimentaria;
       payload.detalleRestriccion = form.detalleRestriccion.trim();
@@ -326,29 +366,66 @@ export default function RsvpForm() {
                       min={0}
                       max={20}
                       value={form.cantidadAcompanantes}
-                      onChange={(e) => set("cantidadAcompanantes", e.target.value)}
+                      onChange={(e) => setCantidad(e.target.value)}
                       className={inputCls(!!errores.cantidadAcompanantes)}
                     />
                   </Campo>
 
-                  {/* Nombres de acompañantes (solo si va con alguien) */}
-                  {vaConAcompanantes && (
-                    <Campo
-                      id="nombresAcompanantes"
-                      label="Nombres de tus acompañantes"
-                      errores={errores.nombresAcompanantes}
+                  {/* Una tarjeta por acompañante: nombre + su restricción */}
+                  {form.acompanantes.map((a, i) => (
+                    <div
+                      key={i}
+                      className="space-y-4 rounded-xl border border-salvia-claro bg-crema/60 p-4"
                     >
-                      <input
-                        id="nombresAcompanantes"
-                        name="nombresAcompanantes"
-                        type="text"
-                        placeholder="Separá los nombres con comas"
-                        value={form.nombresAcompanantes}
-                        onChange={(e) => set("nombresAcompanantes", e.target.value)}
-                        className={inputCls(!!errores.nombresAcompanantes)}
-                      />
-                    </Campo>
-                  )}
+                      <p className="text-sm font-semibold text-tinta">
+                        Acompañante {i + 1}
+                      </p>
+
+                      <Campo id={`acomp-nombre-${i}`} label="Nombre y apellido">
+                        <input
+                          id={`acomp-nombre-${i}`}
+                          type="text"
+                          value={a.nombre}
+                          onChange={(e) => setAcomp(i, "nombre", e.target.value)}
+                          className={inputCls(false)}
+                        />
+                      </Campo>
+
+                      <Campo
+                        id={`acomp-restr-${i}`}
+                        label="Restricción alimentaria"
+                      >
+                        <select
+                          id={`acomp-restr-${i}`}
+                          value={a.restriccionAlimentaria}
+                          onChange={(e) =>
+                            setAcomp(i, "restriccionAlimentaria", e.target.value)
+                          }
+                          className={inputCls(false)}
+                        >
+                          {RESTRICCIONES.map((r) => (
+                            <option key={r} value={r}>
+                              {r}
+                            </option>
+                          ))}
+                        </select>
+                      </Campo>
+
+                      {a.restriccionAlimentaria === "Otra" && (
+                        <Campo id={`acomp-detalle-${i}`} label="¿Cuál?">
+                          <input
+                            id={`acomp-detalle-${i}`}
+                            type="text"
+                            value={a.detalleRestriccion}
+                            onChange={(e) =>
+                              setAcomp(i, "detalleRestriccion", e.target.value)
+                            }
+                            className={inputCls(false)}
+                          />
+                        </Campo>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
                 {/* --- Bloque de QUIEN CONFIRMA (tus datos) --- */}
