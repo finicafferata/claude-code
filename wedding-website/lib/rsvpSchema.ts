@@ -52,8 +52,10 @@ export const rsvpSchema = z
     mensaje: z.string().trim().max(1000).optional().default(""),
 
     // Anti-spam: campo oculto (honeypot). Los bots lo completan, las
-    // personas no. Si viene con contenido, rechazamos el envío.
-    website: z.string().max(0).optional().default(""),
+    // personas no. Se acepta cualquier valor acá para que la validación no
+    // falle; el endpoint detecta si vino con contenido y descarta el envío
+    // en silencio (sin delatar la trampa). Ver app/api/rsvp/route.ts.
+    website: z.string().max(200).optional().default(""),
   })
   .refine(
     (data) =>

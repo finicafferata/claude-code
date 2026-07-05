@@ -1,0 +1,48 @@
+/* app/globals.css — Tailwind CSS v4 (config CSS-first) + fuentes */
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Tema: paleta suave (crema / verde salvia / dorado tenue) y familias tipográficas.
+   Las variables --font-* las inyecta next/font desde app/layout.tsx.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Tipografías */
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Colores de marca */
+  --color-crema: #f7f3ec;       /* fondo principal */
+  --color-marfil: #fbf9f4;      /* fondo alternativo, más claro */
+  --color-salvia: #8c9a86;      /* verde salvia */
+  --color-salvia-oscuro: #5f6e58;
+  --color-salvia-claro: #dbe1d6;
+  --color-dorado: #b69b62;      /* dorado tenue (acento) */
+  --color-tinta: #3b3a34;       /* texto principal (negro cálido) */
+  --color-tinta-suave: #6b6a60; /* texto secundario */
+  --color-linea: #e6e0d5;       /* bordes sutiles */
+}
+
+/* Scroll suave + offset para el navbar fijo al saltar a una ancla */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* Respetar a quienes prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Foco visible y accesible en toda la navegación por teclado */
+:focus-visible {
+  outline: 2px solid var(--color-dorado);
+  outline-offset: 2px;
+}
+
+/* Selección de texto acorde a la paleta */
+::selection {
+  background: var(--color-salvia-claro);
+  color: var(--color-tinta);
+}
