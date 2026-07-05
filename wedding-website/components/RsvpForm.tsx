@@ -21,6 +21,7 @@ type FormState = {
   asiste: Asiste;
   cantidadAcompanantes: string; // string en el input; se castea a número al enviar
   nombresAcompanantes: string;
+  necesitaTraslado: "si" | "no";
   restriccionAlimentaria: Restriccion;
   detalleRestriccion: string;
   cancionSugerida: string;
@@ -38,6 +39,7 @@ const INICIAL: FormState = {
   asiste: "",
   cantidadAcompanantes: "0",
   nombresAcompanantes: "",
+  necesitaTraslado: "no",
   restriccionAlimentaria: "Ninguna",
   detalleRestriccion: "",
   cancionSugerida: "",
@@ -115,6 +117,7 @@ export default function RsvpForm() {
     if (asisteSi) {
       payload.cantidadAcompanantes = Number(form.cantidadAcompanantes);
       payload.nombresAcompanantes = form.nombresAcompanantes.trim();
+      payload.necesitaTraslado = form.necesitaTraslado;
       payload.restriccionAlimentaria = form.restriccionAlimentaria;
       payload.detalleRestriccion = form.detalleRestriccion.trim();
       payload.cancionSugerida = form.cancionSugerida.trim();
@@ -337,6 +340,39 @@ export default function RsvpForm() {
                     className={inputCls(!!errores.nombresAcompanantes)}
                   />
                 </Campo>
+
+                {/* ¿Necesita traslado? */}
+                <fieldset>
+                  <legend className="mb-2 block text-sm font-semibold text-tinta">
+                    ¿Necesitás traslado? <span className="font-normal text-tinta-suave">(combi ida y vuelta)</span>
+                  </legend>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { v: "si" as const, label: "Sí, me sumo a la combi" },
+                      { v: "no" as const, label: "No, voy por mi cuenta" },
+                    ].map((op) => (
+                      <label
+                        key={op.v}
+                        className={[
+                          "cursor-pointer rounded-xl border px-4 py-3 text-center text-sm font-medium transition-colors",
+                          form.necesitaTraslado === op.v
+                            ? "border-salvia bg-salvia text-white"
+                            : "border-linea bg-crema text-tinta-suave hover:border-salvia",
+                        ].join(" ")}
+                      >
+                        <input
+                          type="radio"
+                          name="necesitaTraslado"
+                          value={op.v}
+                          checked={form.necesitaTraslado === op.v}
+                          onChange={() => set("necesitaTraslado", op.v)}
+                          className="sr-only"
+                        />
+                        {op.label}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
 
                 {/* Restricción alimentaria */}
                 <Campo

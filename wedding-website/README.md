@@ -53,6 +53,7 @@ El formulario debe hacer un `POST /api/rsvp` con este JSON:
   "asiste": "si",                        // "si" | "no"  (obligatorio)
   "cantidadAcompanantes": 1,             // número >= 0 (solo si asiste)
   "nombresAcompanantes": "María Pérez",  // opcional
+  "necesitaTraslado": "no",              // "si" | "no" (solo si asiste)
   "restriccionAlimentaria": "Vegetariano", // Ninguna|Vegetariano|Vegano|Celíaco|Otra
   "detalleRestriccion": "",              // obligatorio SOLO si restriccion === "Otra"
   "cancionSugerida": "",                 // opcional

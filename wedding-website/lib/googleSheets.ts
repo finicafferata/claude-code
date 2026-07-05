@@ -19,11 +19,15 @@ export const SHEET_HEADERS = [
   "asiste",
   "cantidad_acompanantes",
   "nombres_acompanantes",
+  "necesita_traslado",
   "restriccion_alimentaria",
   "detalle_restriccion",
   "cancion_sugerida",
   "mensaje",
 ] as const;
+
+// Última columna del rango, derivada de la cantidad de encabezados (ej. 12 -> "L").
+const LAST_COL = String.fromCharCode(64 + SHEET_HEADERS.length);
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -64,6 +68,7 @@ function toRow(data: RsvpData, timestamp: string): string[] {
     data.asiste === "si" ? "Sí" : "No",
     data.asiste === "si" ? String(data.cantidadAcompanantes ?? 0) : "",
     data.asiste === "si" ? data.nombresAcompanantes ?? "" : "",
+    data.asiste === "si" ? (data.necesitaTraslado === "si" ? "Sí" : "No") : "",
     data.restriccionAlimentaria ?? "Ninguna",
     data.detalleRestriccion ?? "",
     data.cancionSugerida ?? "",
@@ -83,8 +88,11 @@ export async function appendRsvp(
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: getSheetId(),
-    range: `${SHEET_TAB}!A:K`,
-    valueInputOption: "USER_ENTERED",
+    range: `${SHEET_TAB}!A:${LAST_COL}`,
+    // RAW (no USER_ENTERED): guarda el texto literal. Evita que un valor que
+    // empieza con + = - @ (ej. un teléfono "+54...") se interprete como
+    // fórmula y quede como #ERROR!, y previene inyección de fórmulas.
+    valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
     requestBody: {
       values: [toRow(data, timestamp)],
@@ -102,7 +110,7 @@ export async function ensureHeaders(): Promise<void> {
 
   const current = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: `${SHEET_TAB}!A1:K1`,
+    range: `${SHEET_TAB}!A1:${LAST_COL}1`,
   });
 
   const hasHeaders = (current.data.values?.[0]?.length ?? 0) > 0;

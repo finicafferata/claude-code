@@ -40,6 +40,9 @@ export const rsvpSchema = z
       .default(0),
     nombresAcompanantes: z.string().trim().max(500).optional().default(""),
 
+    // ¿Necesita traslado (combi)? Solo relevante si asiste === "si".
+    necesitaTraslado: z.enum(["si", "no"]).optional().default("no"),
+
     // Restricciones alimentarias
     restriccionAlimentaria: z
       .enum(DIETARY_OPTIONS)
