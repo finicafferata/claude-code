@@ -24,7 +24,7 @@ export const siteConfig = {
     novia: "Cata",
     novio: "Santos",
     ampersand: "&",
-    hashtag: "#CataYSantos2026",
+    hashtag: "#CataYSantos2027",
   },
 
   // --- Fecha del casamiento --------------------------------------------------
@@ -135,7 +135,7 @@ export const siteConfig = {
 
   // --- Footer ----------------------------------------------------------------
   footer: {
-    hashtag: "#CataYSantos2026",
+    hashtag: "#CataYSantos2027",
     firma: "Con amor, Cata & Santos",
   },
 } as const;
