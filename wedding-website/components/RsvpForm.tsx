@@ -197,7 +197,7 @@ export default function RsvpForm() {
             Confirmá tu asistencia
           </h2>
           <p className="mt-4 text-tinta-suave">
-            Por favor, completá el formulario antes del 30 de septiembre de 2026.
+            Por favor, completá el formulario antes del {siteConfig.rsvp.fechaLimite}.
           </p>
         </Reveal>
 

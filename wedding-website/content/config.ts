@@ -21,29 +21,30 @@ export type Alojamiento = { nombre: string; detalle: string; link?: string };
 export const siteConfig = {
   // --- Novios / marca del sitio ---------------------------------------------
   novios: {
-    novia: "Valentina",
-    novio: "Mateo",
+    novia: "Cata",
+    novio: "Santos",
     ampersand: "&",
-    hashtag: "#ValentinaYMateo2026",
+    hashtag: "#CataYSantos2026",
   },
 
   // --- Fecha del casamiento --------------------------------------------------
   fecha: {
     // ISO con zona horaria de Argentina (-03:00). El countdown usa este valor.
-    iso: "2026-11-14T18:00:00-03:00",
-    dia: "Sábado",
-    textoLargo: "14 de Noviembre de 2026",
+    iso: "2026-03-06T17:00:00-03:00",
+    dia: "Viernes",
+    textoLargo: "6 de marzo de 2026",
     ciudad: "Buenos Aires, Argentina",
   },
 
   // --- Hero ------------------------------------------------------------------
   hero: {
     imagen: "/images/hero.jpg", // <- colocá tu foto acá (recomendado 2000px de ancho)
-    alt: "Valentina y Mateo tomados de la mano al atardecer",
+    alt: "Cata y Santos",
     frase: "¡Nos casamos!",
   },
 
   // --- Nuestra historia ------------------------------------------------------
+  // TODO: personalizar este texto con la historia real de Cata y Santos.
   historia: {
     titulo: "Nuestra historia",
     parrafos: [
@@ -51,62 +52,58 @@ export const siteConfig = {
       "Hoy queremos dar el siguiente paso rodeados de la gente que amamos. Gracias por ser parte de nuestra historia y por acompañarnos en el día más importante.",
     ],
     fotos: [
-      { src: "/images/historia-1.jpg", alt: "Valentina y Mateo riéndose en la playa" },
-      { src: "/images/historia-2.jpg", alt: "Valentina y Mateo abrazados en la montaña" },
+      { src: "/images/historia-1.jpg", alt: "Cata y Santos" },
+      { src: "/images/historia-2.jpg", alt: "Cata y Santos" },
     ] as Foto[],
   },
 
   // --- Detalles del evento ---------------------------------------------------
   ceremonia: {
-    titulo: "Ceremonia",
-    lugar: "Parroquia Nuestra Señora del Pilar",
-    direccion: "Junín 1904, C1113 CABA",
-    hora: "18:00 h",
-    maps: "https://www.google.com/maps/search/?api=1&query=Parroquia+Nuestra+Se%C3%B1ora+del+Pilar+Buenos+Aires",
+    titulo: "Ceremonia religiosa",
+    lugar: "Iglesia del Colegio Marín",
+    direccion: "San Isidro, Buenos Aires", // TODO: confirmar dirección exacta
+    hora: "17:00 h",
+    maps: "https://www.google.com/maps/search/?api=1&query=Iglesia+del+Colegio+Mar%C3%ADn+San+Isidro",
   } as Evento,
 
   fiesta: {
     titulo: "Fiesta",
-    lugar: "Estancia La Alameda",
-    direccion: "Ruta 25 Km 8, Pilar, Buenos Aires",
-    hora: "20:30 h",
-    maps: "https://www.google.com/maps/search/?api=1&query=Estancia+La+Alameda+Pilar+Buenos+Aires",
+    lugar: "Espacio Tigre",
+    direccion: "Tigre, Buenos Aires", // TODO: confirmar dirección exacta
+    hora: "19:00 h",
+    maps: "https://www.google.com/maps/search/?api=1&query=Espacio+Tigre",
   } as Evento,
 
   dressCode: {
     titulo: "Dress code",
-    detalle: "Elegante / Formal",
+    detalle: "Elegante",
     nota: "Sugerimos evitar el color blanco (reservado para la novia).",
   },
 
   // --- Información práctica ---------------------------------------------------
+  // TODO: completar con opciones reales de alojamiento cerca de Tigre / San Isidro.
   alojamiento: [
     {
-      nombre: "Hotel del Pilar",
-      detalle: "A 10 min de la fiesta. Tarifa especial con el código VYM2026.",
-      link: "https://www.google.com/maps/search/?api=1&query=Hotel+del+Pilar",
-    },
-    {
-      nombre: "Cabañas Los Álamos",
-      detalle: "Opción tranquila para el fin de semana, ideal para grupos.",
-      link: "https://www.google.com/maps/search/?api=1&query=Caba%C3%B1as+Los+%C3%81lamos+Pilar",
+      nombre: "TODO: alojamiento sugerido",
+      detalle: "Completar con hoteles/hospedajes cercanos y, si hay, código de descuento.",
+      link: "",
     },
   ] as Alojamiento[],
 
   transporte: {
     titulo: "Transporte",
     texto:
-      "Vamos a coordinar combis desde el centro de Pilar hacia la estancia y de regreso al finalizar la fiesta.",
-    detalle: "Salida: 20:00 h · Regreso: 04:00 h. Confirmá tu lugar en el formulario.",
+      "Vamos a coordinar combis hacia Espacio Tigre y de regreso al finalizar la fiesta. Si querés sumarte, marcá la opción de traslado en el formulario.",
+    detalle: "TODO: confirmar horarios y punto de salida de las combis.",
   },
 
   regalos: {
     titulo: "Regalos",
     mensaje:
       "Tu presencia es nuestro mejor regalo. Si además querés ayudarnos a empezar esta nueva etapa, te dejamos los datos para un obsequio.",
-    alias: "VALE.MATEO.BODA",
-    cbu: "0000003100010000000001",
-    titular: "Valentina Gómez",
+    alias: "santosycata",
+    cbu: "", // opcional; el alias alcanza
+    titular: "Santos Cafferata",
   },
 
   faq: [
@@ -118,11 +115,12 @@ export const siteConfig = {
     {
       pregunta: "¿Hasta cuándo confirmo asistencia?",
       respuesta:
-        "Te pedimos confirmar antes del 30 de septiembre de 2026 para organizar todo con tiempo.",
+        "Te pedimos confirmar antes del 6 de febrero de 2026 para organizar todo con tiempo.",
     },
     {
-      pregunta: "¿Hay estacionamiento?",
-      respuesta: "Sí, la estancia cuenta con estacionamiento gratuito dentro del predio.",
+      pregunta: "¿Cómo llego a la fiesta?",
+      respuesta:
+        "La fiesta es en Espacio Tigre. Vamos a coordinar combis; si querés sumarte, marcá la opción de traslado en el formulario.",
     },
     {
       pregunta: "¿Puedo sugerir una canción?",
@@ -130,10 +128,15 @@ export const siteConfig = {
     },
   ] as FaqItem[],
 
+  // --- RSVP ------------------------------------------------------------------
+  rsvp: {
+    fechaLimite: "6 de febrero de 2026", // TODO: ajustar fecha límite si hace falta
+  },
+
   // --- Footer ----------------------------------------------------------------
   footer: {
-    hashtag: "#ValentinaYMateo2026",
-    firma: "Con amor, Valentina & Mateo",
+    hashtag: "#CataYSantos2026",
+    firma: "Con amor, Cata & Santos",
   },
 } as const;
 
